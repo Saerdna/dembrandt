@@ -6,7 +6,11 @@
 
 Extract any website’s design system into design tokens in a few seconds: logo, colors, typography, borders, and more. One command.
 
+**CLI output**
+
 ![Dembrandt Demo](showcase.png)
+
+**Local UI**
 
 ![Local UI](local-ui.png)
 
