@@ -15,7 +15,7 @@ import { extractBranding } from "./lib/extractors.js";
 import { displayResults } from "./lib/display.js";
 import { toW3CFormat } from "./lib/w3c-exporter.js";
 import { generatePDF } from "./lib/pdf.js";
-import { discoverLinks, parseSitemap } from "./lib/discovery.js";
+import { scoreUrl, parseSitemap } from "./lib/discovery.js";
 import { mergeResults } from "./lib/merger.js";
 import { writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
@@ -93,7 +93,6 @@ program
               // _internalLinks was collected during extraction — score and rank them
               const rawLinks = result._internalLinks || [];
               const homepagePath = new URL(url).pathname.replace(/\/$/, '') || '/';
-              const { scoreUrl } = await import('./lib/discovery.js');
               const seen = new Set([homepagePath]);
               additionalUrls = rawLinks
                 .filter(href => {
