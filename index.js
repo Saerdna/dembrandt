@@ -92,7 +92,7 @@ program
 
             let additionalUrls;
             if (opts.sitemap) {
-              additionalUrls = await parseSitemap(url, maxPages);
+              additionalUrls = await parseSitemap(result.url, maxPages);
             } else {
               additionalUrls = result._discoveredLinks || [];
             }
