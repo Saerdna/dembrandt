@@ -23,7 +23,7 @@ import { join } from "path";
 program
   .name("dembrandt")
   .description("Extract design tokens from any website")
-  .version("0.8.1")
+  .version("0.8.2")
   .argument("<url>")
   .option("--browser <type>", "Browser to use (chromium|firefox)", "chromium")
   .option("--json-only", "Output raw JSON")
@@ -48,7 +48,13 @@ program
       url = "https://" + url;
     }
 
-    const spinner = ora("Starting extraction...").start();
+    // In --json-only mode, redirect all status output to stderr so stdout is clean JSON
+    const originalConsoleLog = console.log;
+    if (opts.jsonOnly) {
+      console.log = (...args) => console.error(...args);
+    }
+
+    const spinner = ora({ text: "Starting extraction...", stream: opts.jsonOnly ? process.stderr : process.stdout }).start();
     let browser = null;
 
     try {
@@ -88,7 +94,7 @@ program
 
           // Multi-page crawl
           if (isMultiPage && maxPages > 0) {
-            spinner.start("Discovering pages...");
+            if (!opts.jsonOnly) spinner.start("Discovering pages...");
 
             let additionalUrls;
             if (opts.sitemap) {
@@ -106,17 +112,17 @@ program
             delete result._discoveredLinks;
 
             if (additionalUrls.length === 0) {
-              spinner.warn("No additional pages discovered");
+              if (!opts.jsonOnly) spinner.warn("No additional pages discovered");
             } else {
               spinner.stop();
-              console.log(chalk.dim(`  Found ${additionalUrls.length} page(s) to analyze`));
+              if (!opts.jsonOnly) console.log(chalk.dim(`  Found ${additionalUrls.length} page(s) to analyze`));
 
               const allResults = [result];
               for (let i = 0; i < additionalUrls.length; i++) {
                 const pageUrl = additionalUrls[i];
                 const pageNum = i + 2;
                 const total = additionalUrls.length + 1;
-                spinner.start(`Extracting page ${pageNum}/${total}: ${new URL(pageUrl).pathname}`);
+                if (!opts.jsonOnly) spinner.start(`Extracting page ${pageNum}/${total}: ${new URL(pageUrl).pathname}`);
 
                 // Polite delay between pages
                 await new Promise(r => setTimeout(r, 2000 + Math.random() * 3000));
@@ -131,7 +137,7 @@ program
                   delete pageResult._discoveredLinks;
                   allResults.push(pageResult);
                 } catch (err) {
-                  spinner.warn(`Skipping ${pageUrl}: ${String(err?.message || err).slice(0, 80)}`);
+                  if (!opts.jsonOnly) spinner.warn(`Skipping ${pageUrl}: ${String(err?.message || err).slice(0, 80)}`);
                 }
               }
 
@@ -238,6 +244,7 @@ program
 
       // Output to terminal
       if (opts.jsonOnly) {
+        console.log = originalConsoleLog;
         console.log(JSON.stringify(outputData, null, 2));
       } else {
         console.log();
