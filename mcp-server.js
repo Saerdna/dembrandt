@@ -14,11 +14,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { chromium } from "playwright-core";
+import { readFileSync } from "node:fs";
 import { extractBranding } from "./lib/extractors.js";
+
+const { version } = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8"));
 
 const server = new McpServer({
   name: "dembrandt",
-  version: "0.8.3",
+  version,
 });
 
 // extractBranding expects a spinner — stub it for MCP context
