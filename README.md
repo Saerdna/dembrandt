@@ -32,6 +32,29 @@ Or use npx without installing: `npx dembrandt bmw.de`
 
 Requires Node.js 18+
 
+## AI Agent Integration (MCP)
+
+Use Dembrandt as a tool in Claude Code, Cursor, Windsurf, or any MCP-compatible client. Ask your agent to "extract the color palette from stripe.com" and it calls Dembrandt automatically.
+
+```bash
+claude mcp add --transport stdio dembrandt -- npx -y dembrandt-mcp
+```
+
+Or add to your project's `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "dembrandt": {
+      "command": "npx",
+      "args": ["-y", "dembrandt-mcp"]
+    }
+  }
+}
+```
+
+7 tools available: `get_design_tokens`, `get_color_palette`, `get_typography`, `get_component_styles`, `get_surfaces`, `get_spacing`, `get_brand_identity`.
+
 ## What to expect from extraction?
 
 - Colors (semantic, palette, CSS variables)
