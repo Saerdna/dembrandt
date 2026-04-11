@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.11.0] - 2026-04-11
+
+### Changed
+- Neutralized documentation terminology
+- Removed third-party brand examples from test fixtures
+- Added `.claudeignore` for AI tool safety
+
+### Removed
+- Brand challenge test suite (replaced with QA baseline tests)
+- Third-party brand screenshots and example outputs
+
 ## [0.3.0] - 2025-11-24
 
 ### Added
